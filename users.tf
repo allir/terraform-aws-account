@@ -2,8 +2,9 @@ resource "aws_iam_user" "users" {
   for_each = var.users
   name = each.key
 
-  tags = merge(
-    {"Name" = each.value.name},
+  tags = merge({
+      "Name" = each.value.name
+    },
     each.value.tags,
     local.common_tags
   )

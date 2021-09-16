@@ -1,3 +1,25 @@
+variable "aws" {
+  description = <<EOF
+AWS Configuration
+
+Region and Account IDs that to be used. Setting allowed Account IDs will make sure the plan is not applied to the wrong account by mistake.
+
+Example:
+{
+  region = "us-west-2"
+  allowed_account_ids = ["1234567890123"]
+}
+EOF
+  type = object({
+    region = string
+    allowed_account_ids = set(string)
+  })
+  default = {
+    region = "us-east-1"
+    allowed_account_ids = []
+  }
+}
+
 variable "aws_region" {
   description = "AWS Region"
   type    = string
@@ -11,7 +33,9 @@ variable "account_name" {
 
 variable "users" {
   description = <<EOF
-Create IAM Users
+IAM Users
+
+A map of IAM Users to create in the account.
 
 Example:
 {
@@ -28,10 +52,10 @@ Example:
     pgp_key = "keybase:user_account"
   }
 }
-  EOF
+EOF
   type = map(object({
     name = string
-    groups = list(string)
+    groups = set(string)
     tags = map(string)
     pgp_key = string
   }))

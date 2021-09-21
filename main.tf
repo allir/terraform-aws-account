@@ -3,28 +3,24 @@ provider "aws" {
   allowed_account_ids = var.aws.allowed_account_ids
 }
 
-provider "aws" {
-  alias= "us-east-1"
-  region = "us-east-1"
-  allowed_account_ids = var.aws.allowed_account_ids
-}
+data "aws_caller_identity" "current" {}
 
 resource "aws_iam_account_alias" "this" {
   account_alias = var.account_name
 }
 
 resource "aws_iam_account_password_policy" "this" {
-  allow_users_to_change_password = true
-  minimum_password_length        = 12
-  password_reuse_prevention      = 0
+  allow_users_to_change_password = var.password_policy.allow_users_to_change_password
+  minimum_password_length        = var.password_policy.minimum_password_length
+  password_reuse_prevention      = var.password_policy.password_reuse_prevention
 
-  max_password_age               = 0
-  hard_expiry                    = false
+  max_password_age               = var.password_policy.max_password_age
+  hard_expiry                    = var.password_policy.hard_expiry
 
-  require_lowercase_characters   = false
-  require_numbers                = false
-  require_symbols                = false
-  require_uppercase_characters   = false
+  require_lowercase_characters   = var.password_policy.require_lowercase_characters
+  require_uppercase_characters   = var.password_policy.require_uppercase_characters
+  require_numbers                = var.password_policy.require_numbers
+  require_symbols                = var.password_policy.require_symbols
 }
 
 resource "aws_iam_group" "admin" {

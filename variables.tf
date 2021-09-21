@@ -20,44 +20,37 @@ EOF
   }
 }
 
-variable "aws_region" {
-  description = "AWS Region"
-  type    = string
-  default = "us-west-2"
-}
-
 variable "account_name" {
   description = "Name/Alias for the AWS account"
   type = string
 }
 
-variable "users" {
-  description = <<EOF
-IAM Users
+variable "password_policy" {
+  description = "AWS Account Password Policy"
+  type = object({
+    allow_users_to_change_password = bool
+    minimum_password_length        = number
+    password_reuse_prevention      = number
 
-A map of IAM Users to create in the account.
+    max_password_age               = number
+    hard_expiry                    = bool
 
-Example:
-{
-  admin = {
-    name = "Account Admin"
-    groups = ["admin", "billing", "mfa"]
-    tags = {}
-    pgp_key = "keybase:admin_account"
+    require_lowercase_characters   = bool
+    require_uppercase_characters   = bool
+    require_numbers                = bool
+    require_symbols                = bool
+  })
+  default = {
+    allow_users_to_change_password = true
+    minimum_password_length        = 12
+    password_reuse_prevention      = 0
+
+    max_password_age               = 0
+    hard_expiry                    = false
+
+    require_lowercase_characters   = false
+    require_uppercase_characters   = false
+    require_numbers                = false
+    require_symbols                = false
   }
-  user = {
-    name = "Account User"
-    groups = ["mfa"]
-    tags = {}
-    pgp_key = "keybase:user_account"
-  }
-}
-EOF
-  type = map(object({
-    name = string
-    groups = set(string)
-    tags = map(string)
-    pgp_key = string
-  }))
-  default = {}
 }

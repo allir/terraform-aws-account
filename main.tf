@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    aws = {
+      version = "~> 3.75"
+      source  = "hashicorp/aws"
+    }
+  }
+}
+
 provider "aws" {
   region = var.aws.region
   allowed_account_ids = var.aws.allowed_account_ids

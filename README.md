@@ -72,3 +72,25 @@ These files can be kept in separate version control or the `.gitignore` file can
 To see the plan run `terraform plan -var-file=myaccount.tfvars`
 
 To apply and create the resources, run `terraform apply -var-file=myaccount.tfvars` and type in 'yes' when prompted.
+
+### Backup
+
+We assume using remote state storage for this so it is already in a remote location and versioned in the bucket. It's possible to back up the file as well.
+
+For the backend configuration itself and variables it would make sense to manage those in a version controlled repository like `git` or the files can be kept with the remote state by copying them using `awscli`.
+
+Assuming the backend config is in `backend.tf` and the variables filename is `myacount.tfvars`.
+
+To copy the backend configuuration and variables file to the backend storage:
+
+```bash
+aws s3 cp backend.tf s3://my-terraform-state-store/terraform/
+aws s3 cp myaccount.tfvars s3://my-terraform-state-store/terraform/
+```
+
+To fetch the backend configuration and variables file at a later time:
+
+```bash
+aws s3 cp s3://my-terraform-state-store/terraform/backend.tf ./
+aws s3 cp s3://my-terraform-state-store/terraform/myaccount.tfvars ./
+```

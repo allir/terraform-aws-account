@@ -23,31 +23,52 @@ resource "random_id" "cloudtrail_postfix" {
 resource "aws_s3_bucket" "cloudtrail" {
   provider = aws.us-east-1
   bucket   = var.cloudtrail.random_postfix ? "${var.cloudtrail.bucket}-${random_id.cloudtrail_postfix[0].dec}" : var.cloudtrail.bucket
-  acl      = "log-delivery-write"
-
+  
   force_destroy = true
+
+  lifecycle {
+    prevent_destroy = true
+  }
 
   tags = merge({
       Name = "Cloudtrail"
     },
     local.common_tags
   )
+}
 
-  versioning {
-    enabled = true
+resource "aws_s3_bucket_acl" "cloudtrail" {
+  provider = aws.us-east-1
+  bucket = aws_s3_bucket.cloudtrail.id
+  acl    = "log-delivery-write"
+}
+
+resource "aws_s3_bucket_versioning" "cloudtrail" {
+  provider = aws.us-east-1
+  bucket = aws_s3_bucket.cloudtrail.id
+  versioning_configuration {
+    status = "Enabled"
   }
+}
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
+resource "aws_s3_bucket_server_side_encryption_configuration" "cloudtrail" {
+  provider = aws.us-east-1
+  bucket = aws_s3_bucket.cloudtrail.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
     }
   }
+}
 
-  lifecycle_rule {
+resource "aws_s3_bucket_lifecycle_configuration" "cloudtrail" {
+  provider = aws.us-east-1
+  bucket = aws_s3_bucket.cloudtrail.id
+  
+  rule {
     id = "cloudtrail lifecycle rule"
-    enabled = true
+    status = "Enabled"
 
     transition {
       days          = var.cloudtrail.archive
@@ -57,10 +78,6 @@ resource "aws_s3_bucket" "cloudtrail" {
     expiration {
       days = var.cloudtrail.expire
     }
-  }
-
-  lifecycle {
-    prevent_destroy = true
   }
 }
 

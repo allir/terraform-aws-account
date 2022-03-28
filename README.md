@@ -73,6 +73,8 @@ To see the plan run `terraform plan -var-file=myaccount.tfvars`
 
 To apply and create the resources, run `terraform apply -var-file=myaccount.tfvars` and type in 'yes' when prompted.
 
+*Note: Terraform variable files `.tfvars` named `terraform.tfvars` or `*.auto.tfvars` are automatically used without using the "-var-file" argument.*
+
 ### Backup
 
 We assume using remote state storage for this so it is already in a remote location and versioned in the bucket. It's possible to back up the file as well.

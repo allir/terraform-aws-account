@@ -37,7 +37,7 @@ resource "aws_iam_user" "users" {
       "Name" = each.value.name
     },
     each.value.tags,
-    local.common_tags
+    local.tags
   )
 
   force_destroy = true

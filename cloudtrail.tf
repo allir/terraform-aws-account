@@ -33,7 +33,7 @@ resource "aws_s3_bucket" "cloudtrail" {
   tags = merge({
       Name = "Cloudtrail"
     },
-    local.common_tags
+    local.tags
   )
 }
 
@@ -157,7 +157,7 @@ resource "aws_cloudtrail" "management_events"{
   tags = merge({
       Name = "Management Events Cloudtrail"
     },
-    local.common_tags
+    local.tags
   )
 
   depends_on = [

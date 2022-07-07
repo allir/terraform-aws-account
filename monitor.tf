@@ -20,14 +20,14 @@ resource "aws_sns_topic" "root_login" {
   provider = aws.us-east-1
   name = "root_login"
 
-  tags = local.common_tags
+  tags = local.tags
 }
 
 resource "aws_sns_topic" "iam_login" {
   provider = aws.us-east-1
   name = "iam_login"
 
-  tags = local.common_tags
+  tags = local.tags
 }
 
 resource "aws_sns_topic_policy" "root_login" {
@@ -179,7 +179,7 @@ resource "aws_cloudwatch_event_rule" "root_login" {
   }
   PATTERN
 
-  tags = local.common_tags
+  tags = local.tags
 }
 
 resource "aws_cloudwatch_event_rule" "iam_login" {
@@ -201,7 +201,7 @@ resource "aws_cloudwatch_event_rule" "iam_login" {
   }
   PATTERN
 
-  tags = local.common_tags
+  tags = local.tags
 }
 
 resource "aws_cloudwatch_event_target" "root_login" {
@@ -255,5 +255,5 @@ resource "aws_cloudwatch_metric_alarm" "root_login" {
     RuleName = aws_cloudwatch_event_rule.root_login.name
   }
   
-  tags = local.common_tags
+  tags = local.tags
 }
